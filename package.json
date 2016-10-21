@@ -1,7 +1,7 @@
 {
   "name": "pinky-swear",
   "description": "promisified EventEmitter",
-  "version": "0.0.1",
+  "version": "1.0.0",
   "author": {
     "name": "David Straub",
     "email": "himself@davidstraub.com",
@@ -15,15 +15,12 @@
   "scripts": {
     "test": "./node_modules/.bin/mocha"
   },
-  "peerDependencies": {
-    "when": "^3.0.0"
-  },
+  "peerDependencies": {},
   "devDependencies": {
     "chai": "^3.2.0",
     "mocha": "^2.2.5",
     "pre-commit": "^1.0.10"
   },
-  "peerDependencies": {},
   "engines": {
     "node": ">=0.10.0"
   }
