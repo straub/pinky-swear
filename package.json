@@ -1,0 +1,30 @@
+{
+  "name": "pinky-swear",
+  "description": "promisified EventEmitter",
+  "version": "0.0.1",
+  "author": {
+    "name": "David Straub",
+    "email": "himself@davidstraub.com",
+    "url": "http://www.davidstraub.com/"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/straub/pinky-swear.git"
+  },
+  "main": "pinky-swear.js",
+  "scripts": {
+    "test": "./node_modules/.bin/mocha"
+  },
+  "peerDependencies": {
+    "when": "^3.0.0"
+  },
+  "devDependencies": {
+    "chai": "^3.2.0",
+    "mocha": "^2.2.5",
+    "pre-commit": "^1.0.10"
+  },
+  "peerDependencies": {},
+  "engines": {
+    "node": ">=0.10.0"
+  }
+}
