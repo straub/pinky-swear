@@ -16,7 +16,7 @@ util.inherits(PinkySwear, EventEmitter);
 PinkySwear.prototype._runner = sequence;
 
 PinkySwear.prototype.emit = function emit(type) {
-    var listeners = this._events[type] || [],
+    var listeners = this._events && this._events[type] || [],
         args;
 
     debug(this.constructor.name, 'emitting', type);
