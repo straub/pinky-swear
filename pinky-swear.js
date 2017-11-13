@@ -5,7 +5,8 @@ var util = require('util'),
     when = require('when'),
     sequence = require('when/sequence'),
     parallel = require('when/parallel'),
-    slice = Array.prototype.slice;
+    slice = Array.prototype.slice,
+    debug = require('debug')('pinky-swear');
 
 function PinkySwear() {
     PinkySwear.super_.call(this);
@@ -17,6 +18,8 @@ PinkySwear.prototype._runner = sequence;
 PinkySwear.prototype.emit = function emit(type) {
     var listeners = this._events[type] || [],
         args;
+
+    debug(this.constructor.name, 'emitting', type);
 
     listeners = Array.isArray(listeners) ? listeners : [listeners];
 
@@ -44,6 +47,8 @@ PinkySwear.prototype.emit = function emit(type) {
 
     args = slice.call(arguments);
     args[0] = listeners; // Replace `type` with the array of 'tasks'.
+
+    debug(this.constructor.name, 'listeners', listeners);
 
     return this._runner.apply(null, args);
 };
