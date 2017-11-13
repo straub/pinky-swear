@@ -59,12 +59,14 @@ function testPinkySwearClass(PinkySwearClass) {
                 var swear = new PinkySwearClass();
 
                 swear.once('foo', function () { return 'bar'; });
+                swear.once('foo', function () { return when.resolve('baz').delay(10); });
 
                 return swear.emit('foo')
                 .then(function _swearResults(results) {
                     expect(results).to.be.an('Array')
-                        .with.length(1);
+                        .with.length(2);
                     results[0].should.equal('bar');
+                    results[1].should.equal('baz');
 
                     return swear.emit('foo');
                 })

@@ -46,7 +46,7 @@ PinkySwear.prototype.emit = function emit(type) {
     }
 
     args = slice.call(arguments);
-    args[0] = listeners; // Replace `type` with the array of 'tasks'.
+    args[0] = listeners.slice(); // Replace `type` with the array of 'tasks'.
 
     debug(this.constructor.name, 'listeners', listeners);
 
