@@ -15,8 +15,10 @@ util.inherits(PinkySwear, EventEmitter);
 PinkySwear.prototype._runner = sequence;
 
 PinkySwear.prototype.emit = function emit(type) {
-    var listeners = this.listeners(type),
+    var listeners = this._events[type] || [],
         args;
+
+    listeners = Array.isArray(listeners) ? listeners : [listeners];
 
     // Cut out early if there are no listeners.
     if (!listeners.length) {
@@ -46,30 +48,53 @@ PinkySwear.prototype.emit = function emit(type) {
     return this._runner.apply(null, args);
 };
 
-PinkySwear.prototype.once = function once(type, listener) {
-    if (typeof listener !== 'function')
-        throw new TypeError('listener must be a function');
-
-    var fired = false,
-        self = this;
-
-    function g() {
-        self.removeListener(type, g);
-
-        if (!fired) {
-            fired = true;
-            // Had to monkey patch all of `#once()`
-            // just to return the result of the original listener.
-            // *le sigh*
-            return listener.apply(self, arguments);
-        }
+function onceWrapper() {
+  if (!this.fired) {
+    this.target.removeListener(this.type, this.wrapFn);
+    this.fired = true;
+    switch (arguments.length) {
+      case 0:
+        return this.listener.call(this.target);
+      case 1:
+        return this.listener.call(this.target, arguments[0]);
+      case 2:
+        return this.listener.call(this.target, arguments[0], arguments[1]);
+      case 3:
+        return this.listener.call(this.target, arguments[0], arguments[1],
+                                  arguments[2]);
+      default:
+        // Still had to monkey patch all of `#once()`
+        // just to return the result of the original listener here.
+        // *le sigh*
+        return this.listener.apply(this.target, arguments);
     }
+  }
+}
 
-    g.listener = listener;
-    this.on(type, g);
+function _onceWrap(target, type, listener) {
+  var state = { fired: false, wrapFn: undefined, target, type, listener };
+  var wrapped = onceWrapper.bind(state);
+  wrapped.listener = listener;
+  state.wrapFn = wrapped;
+  return wrapped;
+}
 
-    return this;
+PinkySwear.prototype.once = function once(type, listener) {
+  if (typeof listener !== 'function') {
+    throw new TypeError('listener must be a function');
+  }
+  this.on(type, _onceWrap(this, type, listener));
+  return this;
 };
+
+PinkySwear.prototype.prependOnceListener =
+    function prependOnceListener(type, listener) {
+      if (typeof listener !== 'function') {
+        throw new TypeError('listener must be a function');
+      }
+      this.prependListener(type, _onceWrap(this, type, listener));
+      return this;
+    };
 
 module.exports = PinkySwear;
 
