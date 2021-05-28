@@ -1,6 +1,5 @@
 
-var PinkySwear = require('../pinky-swear'),
-    when = require('when');
+var PinkySwear = require('../pinky-swear');
 
 function testPinkySwearClass(PinkySwearClass) {
 
@@ -9,7 +8,7 @@ function testPinkySwearClass(PinkySwearClass) {
         it('should return a promise from emit', function () {
             var swear = new PinkySwearClass();
 
-            expect(swear.emit('foo')).to.satisfy(when.isPromiseLike);
+            expect(swear.emit('foo')).to.respondTo('then');
         });
 
         it ('should resolve with no listeners', function () {
@@ -26,7 +25,7 @@ function testPinkySwearClass(PinkySwearClass) {
             var swear = new PinkySwearClass();
 
             swear.on('foo', function () { return 'bar'; });
-            swear.on('foo', function () { return when.resolve('baz').delay(10); });
+            swear.on('foo', function () { return DelayablePromise.resolve('baz').delay(10); });
 
             return swear.emit('foo')
             .then(function _swearResults(results) {
@@ -59,7 +58,7 @@ function testPinkySwearClass(PinkySwearClass) {
                 var swear = new PinkySwearClass();
 
                 swear.once('foo', function () { return 'bar'; });
-                swear.once('foo', function () { return when.resolve('baz').delay(10); });
+                swear.once('foo', function () { return DelayablePromise.resolve('baz').delay(10); });
 
                 return swear.emit('foo')
                 .then(function _swearResults(results) {
@@ -81,3 +80,17 @@ function testPinkySwearClass(PinkySwearClass) {
 
 testPinkySwearClass(PinkySwear);
 testPinkySwearClass(PinkySwear.Parallel);
+
+class DelayablePromise extends Promise {
+    delay (ms) {
+        return this.then(
+            (result) => new Promise(
+                (resolve) => setTimeout(
+                    () => resolve(result),
+                    ms,
+                ),
+            ),
+        );
+    }
+}
+

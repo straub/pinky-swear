@@ -2,18 +2,49 @@
 
 var util = require('util'),
     EventEmitter = require('events').EventEmitter,
-    when = require('when'),
-    sequence = require('when/sequence'),
-    parallel = require('when/parallel'),
     slice = Array.prototype.slice,
     debug = require('debug')('pinky-swear');
 
 function PinkySwear() {
     PinkySwear.super_.call(this);
+
+    this.Promise = Promise;
 }
 util.inherits(PinkySwear, EventEmitter);
 
-PinkySwear.prototype._runner = sequence;
+// Based on https://github.com/cujojs/when/blob/master/sequence.js
+PinkySwear.prototype._runner = function sequenceRunner (tasks, ...args) {
+    const
+        { Promise } = this,
+        results = [];
+
+    return Promise.all(args)
+    .then(
+        (args) => tasks.reduce(
+            async (prevPromise, task) => {
+                await prevPromise;
+                const promiseOrValue = task(...args);
+                results.push(promiseOrValue);
+                return promiseOrValue;
+            },
+            Promise.resolve(),
+        ),
+    )
+    .then(() => Promise.all(results));
+}
+
+// Based on https://github.com/cujojs/when/blob/master/parallel.js
+function parallelRunner (tasks, ...args) {
+    const { Promise } = this;
+
+    return Promise.all(args)
+    .then(
+        (args) => tasks.map(
+            async (task) => task(...args),
+        ),
+    )
+    .then((promises) => Promise.all(promises));
+}
 
 PinkySwear.prototype.emit = function emit(type) {
     var listeners = this._events && this._events[type] || [],
@@ -39,10 +70,10 @@ PinkySwear.prototype.emit = function emit(type) {
                 err.context = er;
             }
 
-            return when.reject(err);
+            return Promise.reject(err);
         }
 
-        return when.resolve([]);
+        return Promise.resolve([]);
     }
 
     args = slice.call(arguments);
@@ -50,7 +81,7 @@ PinkySwear.prototype.emit = function emit(type) {
 
     debug(this.constructor.name, 'listeners', listeners);
 
-    return this._runner.apply(null, args);
+    return this._runner.apply(this, args);
 };
 
 function onceWrapper() {
@@ -108,6 +139,6 @@ function PinkySwearParallel() {
 }
 util.inherits(PinkySwearParallel, PinkySwear);
 
-PinkySwearParallel.prototype._runner = parallel;
+PinkySwearParallel.prototype._runner = parallelRunner;
 
 module.exports.Parallel = PinkySwearParallel;
