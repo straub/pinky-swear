@@ -1,7 +1,7 @@
 {
   "name": "pinky-swear",
   "description": "promisified EventEmitter",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "author": {
     "name": "David Straub",
     "email": "himself@davidstraub.com",
