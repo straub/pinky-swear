@@ -1,6 +1,5 @@
 
-var chai = require("chai"),
-    when = require("when");
+var chai = require("chai");
 
 global.should = chai.should();
 
@@ -9,5 +8,3 @@ global.AssertionError = chai.AssertionError;
 global.Assertion = chai.Assertion;
 global.assert = chai.assert;
 
-global.fulfilledPromise = when.resolve;
-global.rejectedPromise = when.reject;
