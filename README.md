@@ -1,7 +1,7 @@
 pinky-swear
 ===========
 
-promisified EventEmitter using `when.js`.
+promisified EventEmitter.
 
 ## Test
 
