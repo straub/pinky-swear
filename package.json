@@ -28,7 +28,7 @@
     "node": ">=0.10.0"
   },
   "dependencies": {
-    "debug": "^4.0.0"
+    "debug": "^4.3.2"
   },
   "publishConfig": {
     "registry": "https://registry.npmjs.org/"
