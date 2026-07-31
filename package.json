@@ -1,7 +1,7 @@
 {
   "name": "pinky-swear",
   "description": "promisified EventEmitter",
-  "version": "2.0.1",
+  "version": "2.1.0",
   "author": {
     "name": "David Straub",
     "email": "himself@davidstraub.com",
@@ -12,11 +12,13 @@
     "url": "https://github.com/straub/pinky-swear.git"
   },
   "main": "pinky-swear.js",
+  "types": "pinky-swear.d.ts",
   "scripts": {
     "test": "./node_modules/.bin/mocha"
   },
   "files": [
-    "pinky-swear.js"
+    "pinky-swear.js",
+    "pinky-swear.d.ts"
   ],
   "peerDependencies": {},
   "devDependencies": {
