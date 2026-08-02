@@ -1,0 +1,21 @@
+{
+  "compilerOptions": {
+    "target": "es2020",
+    "lib": ["es2020"],
+    // node16 rather than the legacy node10 resolution, which TypeScript 7
+    // removed. The other resolution modes consumers use are covered by
+    // `npm run test:package`, which resolves the packed tarball under each.
+    "module": "node16",
+    "moduleResolution": "node16",
+    "types": ["node"],
+
+    "strict": true,
+    "noEmit": true,
+
+    // The declarations under test are library code, so check them properly
+    // instead of taking tsc's usual word for it.
+    "skipLibCheck": false,
+    "skipDefaultLibCheck": false
+  },
+  "files": ["pinky-swear.test-d.ts"]
+}

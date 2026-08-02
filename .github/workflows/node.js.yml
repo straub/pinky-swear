@@ -15,16 +15,37 @@ jobs:
     runs-on: ubuntu-latest
 
     strategy:
+      fail-fast: false
       matrix:
-        node-version: [10.x, 12.x, 14.x, 15.x, 16.x]
+        node-version: [18.x, 20.x, 22.x, 24.x]
         # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
 
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v4
     - name: Use Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v2
+      uses: actions/setup-node@v4
       with:
         node-version: ${{ matrix.node-version }}
+        cache: npm
     - run: npm ci
     - run: npm run build --if-present
     - run: npm test
+
+  # The published type declarations only need checking once, but they need
+  # checking against something: `npm test` runs the type tests in test/types,
+  # and attw resolves the packed tarball the way each consumer setup would.
+  types:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v4
+    - uses: actions/setup-node@v4
+      with:
+        node-version: 22.x
+        cache: npm
+    - run: npm ci
+    - name: Type-check the declarations against test/types
+      run: npm run test:types
+    - name: Check the published type wiring
+      run: npm run test:package
