@@ -14,7 +14,10 @@
   "main": "pinky-swear.js",
   "types": "pinky-swear.d.ts",
   "scripts": {
-    "test": "./node_modules/.bin/mocha"
+    "test": "npm run test:unit && npm run test:types",
+    "test:unit": "mocha",
+    "test:types": "tsc --project test/types/tsconfig.json",
+    "test:package": "npx --yes @arethetypeswrong/cli@0.18.5 --pack ."
   },
   "files": [
     "pinky-swear.js",
@@ -22,12 +25,14 @@
   ],
   "peerDependencies": {},
   "devDependencies": {
+    "@types/node": "24.13.3",
     "chai": "3.5.0",
     "mocha": "2.5.3",
-    "pre-commit": "1.1.3"
+    "pre-commit": "1.1.3",
+    "typescript": "5.9.3"
   },
   "engines": {
-    "node": ">=0.10.0"
+    "node": ">=8.0.0"
   },
   "dependencies": {
     "debug": "^4.0.0"
